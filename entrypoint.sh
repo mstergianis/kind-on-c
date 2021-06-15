@@ -543,46 +543,6 @@ main() {
   docker::start
   trap 'docker::stop "$?"' EXIT
   docker::await
-
-  # setup bin dir & path
-  local binPath="${PWD}/bin"
-  mkdir -p "$binPath"
-  export PATH="${PATH}:${binPath}"
-
-  # install kind
-  kind::install "$binPath"
-
-  # prepare the node image, if configured
-  local imageName
-  imageName="$( kind::image::prepare )"
-
-  # run pre start stuff
-  if [ -n "${KIND_PRE_START:-}" ]
-  then
-    # shellcheck disable=SC2016
-    log::info 'Running pre start commands from "$KIND_PRE_START"'
-    bash -e -u -c "$KIND_PRE_START"
-  fi
-
-  # export the node image/rootfs, if configured
-  export::node "$imageName"
-
-  if [ -z "${KIND_TESTS:-}" ]
-  then
-    # shellcheck disable=SC2016
-    log::warn '"$KIND_TESTS" not sepcified. Not really running any tests.'
-    return 0
-  fi
-
-  # install kubectl
-  kubectl::install "$binPath"
-
-  # start the cluster
-  kind::start "$imageName"
-
-  # shellcheck disable=SC2016
-  log::info 'Running tests from "$KIND_TESTS"'
-  bash -e -u -c "$KIND_TESTS"
 }
 
 main "$@"

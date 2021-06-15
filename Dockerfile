@@ -39,12 +39,7 @@ RUN apt-get -y update \
   && rm -rf /var/lib/apt/lists/*
 
 # Install latest oq
-RUN \
-    dlURL="$( \
-      curl -fsSL "https://api.github.com/repos/blacksmoke16/oq/releases?pages=1" \
-        | jq --arg re "oq.*linux-x86_64" -r '[ .[].assets[] | select(.name|test($re)) | .browser_download_url ][0]' \
-    )" \
-  && install -m 0750 <(curl -fsSL "$dlURL") /usr/local/bin/oq
+COPY ./oq /usr/local/bin/oq
 
 LABEL org.opencontainers.image.title         "kind-on-c"
 LABEL org.opencontainers.image.x.base-image  "${BASE_IMAGE}"

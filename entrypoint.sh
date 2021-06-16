@@ -536,7 +536,7 @@ log::version() {
   log::info "kind-on-c: ${v}"
 }
 
-main() {
+docker::up() {
   lib::load
   log::version
 
@@ -544,5 +544,3 @@ main() {
   trap 'docker::stop "$?"' EXIT
   docker::await
 }
-
-main "$@"
